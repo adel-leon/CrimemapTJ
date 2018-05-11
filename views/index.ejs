@@ -3,14 +3,41 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css"> -->
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' />
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <span id="zoom"></span>
+    <div id="map" class="map"></div>
+    
+    <form>
+      <label for="points">Show points</label>
+      <input type="checkbox" name="points" id="points">
+      <label for="heat">Show heatmap</label>
+      <input type="checkbox" name="heat" id="heat">
+
+      <label>blur size: </label><span id="blur-value">5</span>
+      <input id="blur" type="range" min="0" max="50" step=".1" value="5"/>
+      <label>weight size: </label><span id="weight-value">5</span>
+      <input id="weight" type="range" min="0" max="10" step=".1" value="5"/>
+      <label>intensity size: </label><span id="intensity-value">5</span>
+      <input id="intensity" type="range" min="0" max="10" step=".1" value="5"/>
+      <label>radius size: </label><span id="radius-value">20</span>
+      <input id="radius" type="range" min=".1" max="100" step="1" value="20"/>
+      <label>opacity size: </label><span id="opacity-value">1</span>
+      <input id="opacity" type="range" min="0" max="1" step=".01" value="1"/>
+    </form>
+
     <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
-  <script src="/javascripts/request.js"></script>
+  <!-- <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script> -->
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
+  <!-- <script src="/javascripts/request.js"></script> -->
+  <!-- <script src="/javascripts/map.js"></script> -->
+  <script src="/javascripts/mapbox.js"></script>
   </body>
 </html>

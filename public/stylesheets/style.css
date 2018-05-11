@@ -6,3 +6,15 @@ body {
 a {
   color: #00B7FF;
 }
+
+input {
+  display: block;
+  width: 50%;
+}
+
+#map {
+  width: 800px;
+  height: 600px;
+  border: solid;
+}
+

@@ -1,6 +1,6 @@
 function init(){
     $.ajax({
-        url: "http://ocalhost:3000/API/crimes",
+        url: "http://localhost:3000/API/crimes",
         contentType: "application/json",
         type: "GET",
         success: function(response){
@@ -13,5 +13,3 @@ function init(){
         console.log("Done");
     });
 }
-
-window.onload = init;
