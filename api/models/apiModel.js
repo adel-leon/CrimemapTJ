@@ -15,7 +15,7 @@ var geoJSONSchema = new mongoose.Schema({
   featurecollection: mongoose.Schema.Types.FeatureCollection
   },
   {
-    collection: 'tijuana'
+    collection: 'Tijuana2017'
   }
 );
 

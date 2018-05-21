@@ -6,6 +6,8 @@ var map = new mapboxgl.Map({
     zoom: 10
 });
 
+var crimeData;
+
 //dev tweaking
 var blur = document.getElementById('blur');
 var weight = document.getElementById('weight');
@@ -23,6 +25,24 @@ var points_layer = document.getElementById('points');
 var heat_layer = document.getElementById('heat');
 
 var zoom = document.getElementById('zoom');
+
+$.ajax({
+    url: "http://localhost:3000/API/crimes",
+    contentType: "application/json",
+    type: "GET",
+    async: false,
+    success: function(response){
+        console.log("Success");
+    },
+    error: function(error,status){
+        console.error(error);
+    }
+}).done(function (data) {
+    console.log(data);
+    crimeData = data[0];
+    console.log(crimeData);
+});
+
 
 // var data = (function() {
 //     var json = null;
@@ -42,7 +62,7 @@ map.on('load', function() {
     // Heatmap layers also work with a vector tile source.
     map.addSource('earthquakes', {
         "type": "geojson",
-        "data": "/incidencia_Tijuana_2018_carto.geojson"
+        "data": crimeData
        
     });
 
