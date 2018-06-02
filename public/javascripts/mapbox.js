@@ -37,8 +37,12 @@ function mapTweaking() {
     points.addEventListener('input', function() {
         if (points.checked === true) {
             map.setLayoutProperty('crime-point','visibility','visible');
+            map.setLayoutProperty('crime-clusters','visibility','visible');
+            map.setLayoutProperty('cluster-count','visibility','visible');
         } else {
             map.setLayoutProperty('crime-point','visibility','none');
+            map.setLayoutProperty('crime-clusters','visibility','none');
+            map.setLayoutProperty('cluster-count','visibility','none');
         }
     });
     
@@ -69,6 +73,11 @@ function mapTweaking() {
         map.setPaintProperty('crime-heat','heatmap-opacity',parseFloat(opacity.value,10));
         opacity_value.innerText = opacity.value;
     });
+
+    document.addEventListener('wheel', function () {
+        zoom.innerText = map.getZoom();
+    });
+
 }
 
 function getCrimeData() {
@@ -129,22 +138,16 @@ function addMapData() {
         // "maxzoom": 9,
         "paint": {
             // Increase the heatmap weight based on frequency and property magnitude
-            "heatmap-weight": [
-                "interpolate",
-                ["linear"],
-                ["get", "mag"],
-                0, 0, //input, output
-                6, 1
-            ],
+            "heatmap-weight": 0.5,
             // Increase the heatmap color weight weight by zoom level
             // heatmap-intensity is a multiplier on top of heatmap-weight
-            "heatmap-intensity": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                0, 1,
-                9, 3
-            ],
+            // "heatmap-intensity": [
+            //     "interpolate",
+            //     ["linear"],
+            //     ["zoom"],
+            //     0, 1,
+            //     9, 3
+            // ],
             // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
             // Begin color ramp at 0-stop with a 0-transparancy color
             // to create a blur-like effect.
@@ -152,29 +155,25 @@ function addMapData() {
                 "interpolate",
                 ["linear"],
                 ["heatmap-density"],
-                0, "rgba(33,102,172,0)",
-                0.2, "rgb(103,169,207)",
-                0.4, "rgb(209,229,240)",
-                0.6, "rgb(253,219,199)",
-                0.8, "rgb(239,138,98)",
-                1, "rgb(178,24,43)"
+                0, "rgba(0, 255, 0, 0)",
+                0.2, "rgb(255, 255, 0)",
+                0.4, "rgb(255, 125, 0)",
+                0.6, "rgb(255, 0, 0)",
+                0.8, "rgb(175, 0, 0)",
+                1, "rgb(100, 0, 100)"
             ],
             // Adjust the heatmap radius by zoom level
             "heatmap-radius": [
                 "interpolate",
                 ["linear"],
                 ["zoom"],
-                7, 1,
-                9, 0
+                10.4, 6,
+                11.4, 15,
+                12.7, 35,
+                13.9, 60,
+                14.8, 99
             ],
-            // Transition from heatmap to circle layer by zoom level
-            // "heatmap-opacity": [
-            //     "interpolate",
-            //     ["linear"],
-            //     ["zoom"],
-            //     7, 1,
-            //     9, 0
-            // ],
+            "heatmap-opacity": 0.5
         }
     },"water_label"); //water label is the first label layer for the current style
     //crimes
@@ -184,11 +183,12 @@ function addMapData() {
         "source": "crime-clustered",
         filter: ["!has", "point_count"],
         "layout": {
-            "icon-image": "police-15"
+            "icon-image": "police-15",
+            "icon-allow-overlap":true
         },
         // "minzoom": 7,
         
-    },"water_label"); //place layer before all map labels
+    });
     //crime clusters
     map.addLayer({
         id: "crime-clusters",
@@ -253,7 +253,7 @@ function addMapData() {
 }
 
 $( document ).ready(function() {
-    mapTweaking();
+    //mapTweaking();
     getCrimeData();
     
 });
