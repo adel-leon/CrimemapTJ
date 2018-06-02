@@ -6,6 +6,9 @@ var map = new mapboxgl.Map({
     center: [-116.94, 32.48],
     zoom: 10
 });
+var popup = new mapboxgl.Popup({
+    closeButton: false
+});
 
 function mapTweaking() {
     //dev tweaking
@@ -230,6 +233,23 @@ function addMapData() {
             "text-size": 12
         }
     });
+    //add popups
+    map.on('mousemove', 'crime-point', function(e) {
+        // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+
+        // Populate the popup and set its coordinates based on the feature.
+        var feature = e.features[0];
+        popup.setLngLat(feature.geometry.coordinates)
+            .setText(feature.properties.DELITO)
+            .addTo(map);
+    });
+    //remove popups
+    map.on('mouseleave', 'crime-point', function() {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+    });
+
 }
 
 $( document ).ready(function() {
