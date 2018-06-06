@@ -2,7 +2,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiaWMtYWRlbCIsImEiOiJjajlxNmh3Z2c1dGo0MzJsc2g4d
 var crimeData;
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/bright-v9',
+    style: 'mapbox://styles/ic-adel/cjhy2zm3z1d3y2sr9ci4elavj',
     center: [-116.94, 32.48],
     zoom: 10
 });
@@ -24,8 +24,7 @@ function mapTweaking() {
     var radius_value = document.getElementById('radius-value');
     var opacity_value = document.getElementById('opacity-value');
     
-    var points_layer = document.getElementById('points');
-    var heat_layer = document.getElementById('heat');
+    
     
     var zoom = document.getElementById('zoom');
     
@@ -73,11 +72,11 @@ function mapTweaking() {
         map.setPaintProperty('crime-heat','heatmap-opacity',parseFloat(opacity.value,10));
         opacity_value.innerText = opacity.value;
     });
-
+    
     document.addEventListener('wheel', function () {
         zoom.innerText = map.getZoom();
     });
-
+    
 }
 
 function getCrimeData() {
@@ -96,21 +95,21 @@ function getCrimeData() {
         if (map.loaded()) {
             addMapData();
         }
-
+        
         // add markers to map
-    // crimeData.features.forEach(function(marker) {
+        // crimeData.features.forEach(function(marker) {
         
-    //     // create a HTML element for each feature
-    //     var el = document.createElement('div');
-    //     el.className = 'marker';
+        //     // create a HTML element for each feature
+        //     var el = document.createElement('div');
+        //     el.className = 'marker';
         
-    //     // make a marker for each feature and add to the map
-    //     new mapboxgl.Marker(el)
-    //     .setLngLat(marker.geometry.coordinates)
-    //     .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-    //     .setHTML('<h3>' + marker.properties.DELITO + '</h3><p>' + marker.properties.MUNICIPIO + '</p>'))
-    //     .addTo(map);
-    // });
+        //     // make a marker for each feature and add to the map
+        //     new mapboxgl.Marker(el)
+        //     .setLngLat(marker.geometry.coordinates)
+        //     .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+        //     .setHTML('<h3>' + marker.properties.DELITO + '</h3><p>' + marker.properties.MUNICIPIO + '</p>'))
+        //     .addTo(map);
+        // });
     });    
 }
 
@@ -121,13 +120,13 @@ function addMapData() {
         "type": "geojson",
         "data": crimeData
     });
-
+    
     map.addSource('crime-clustered', {
         "type": "geojson",
         "data": crimeData,
         cluster: true,
         clusterMaxZoom: 14, // Max zoom to cluster points on
-        clusterRadius: 25 // Radius of each cluster when clustering points (defaults to 50)
+        clusterRadius: 30 // Radius of each cluster when clustering points (defaults to 50)
     });
     
     //heatmap
@@ -175,7 +174,7 @@ function addMapData() {
             ],
             "heatmap-opacity": 0.5
         }
-    },"water_label"); //water label is the first label layer for the current style
+    },"road-label-small"); //water label is the first label layer for the current style
     //crimes
     map.addLayer({
         "id": "crime-point",
@@ -183,7 +182,14 @@ function addMapData() {
         "source": "crime-clustered",
         filter: ["!has", "point_count"],
         "layout": {
-            "icon-image": "police-15",
+            "icon-image": "{DELITO}",
+            "icon-size": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                10, .4,
+                15, .6
+            ],
             "icon-allow-overlap":true
         },
         // "minzoom": 7,
@@ -211,7 +217,7 @@ function addMapData() {
                 100,"#ff5b5b",
                 500,"#ff0000",
                 1000,"#b20000"
-
+                
             ],
             "circle-radius": [
                 "interpolate",
@@ -242,23 +248,107 @@ function addMapData() {
     map.on('mousemove', 'crime-point', function(e) {
         // Change the cursor style as a UI indicator.
         map.getCanvas().style.cursor = 'pointer';
-
+        
         // Populate the popup and set its coordinates based on the feature.
         var feature = e.features[0];
         popup.setLngLat(feature.geometry.coordinates)
-            .setText(feature.properties.DELITO)
-            .addTo(map);
+        .setText(feature.properties.DELITO)
+        .addTo(map);
     });
     //remove popups
     map.on('mouseleave', 'crime-point', function() {
         map.getCanvas().style.cursor = '';
         popup.remove();
     });
+    
+}
 
+function createChart(){
+    var delito;
+    var options = {
+        title: {text: 'Title'},
+        subtitle: {text: 'Subtitle'},
+        xAxis: {categories: []},
+        yAxis: {title: {text: 'Count'}},
+        series: [{name: 'Count', data: []}]
+    };
+    for (var i = crimeData.features.length - 1; i >= 0; i--) {
+        delito = crimeData.features[i].properties.DELITO;
+        if(!options.xAxis.categories.indexOf(delito))
+        options.xAxis.categories.push(delito);
+    };
+    //options.series[0].data.push(data[i].Count);
+    $('#container').highcharts(options);
 }
 
 $( document ).ready(function() {
     //mapTweaking();
+    var points = document.getElementById('points');
+    var heat = document.getElementById('heat');
+    
+    points.addEventListener('input', function() {
+        if (points.checked === true) {
+            map.setLayoutProperty('crime-point','visibility','visible');
+            map.setLayoutProperty('crime-clusters','visibility','visible');
+            map.setLayoutProperty('cluster-count','visibility','visible');
+        } else {
+            map.setLayoutProperty('crime-point','visibility','none');
+            map.setLayoutProperty('crime-clusters','visibility','none');
+            map.setLayoutProperty('cluster-count','visibility','none');
+        }
+    });
+    
+    heat.addEventListener('input', function() {
+        if (heat.checked === true) {
+            map.setLayoutProperty('crime-heat','visibility','visible');
+        } else {
+            map.setLayoutProperty('crime-heat','visibility','none');
+        }
+    });
+    
+    map.on('load', function() {
+        map.loadImage('./images/banco.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('ROBO A BANCO', image);
+        });
+        map.loadImage('./images/casa.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('ROBO CALIFICADO A CASA HABITACI?N', image);
+            map.addImage('ROBO CON VIOLENCIA A CASA', image);
+        });
+        map.loadImage('./images/comercio.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('ROBO CALIFICADO A COMERCIO', image);
+            map.addImage('ROBO CON VIOLENCIA A COMERCIO', image);
+        });
+        map.loadImage('./images/culposas.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('LESIONES CULPOSAS', image);
+        });
+        map.loadImage('./images/dolosas.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('LESIONES INTENCIONALES', image);
+        });
+        map.loadImage('./images/homicidio.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('HOMICIDIO CALIFICADO (VIOLENTO)', image);
+        });
+        map.loadImage('./images/robo simple.svg', function(error, image) {
+            if (error) throw error;
+            map.addImage('ROBO SIMPLE', image);
+        });
+        map.loadImage('./images/secuestro.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('SECUESTRO (CONFIRMADO)', image);
+        });
+        map.loadImage('./images/vehiculo.png', function(error, image) {
+            if (error) throw error;
+            map.addImage('ROBO DE VEH?CULO', image);
+            map.addImage('ROBO DE VEH?CULO CON VIOLENCIA', image);
+        });
+        
+    });
+    
     getCrimeData();
     
 });

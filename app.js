@@ -7,10 +7,10 @@ var cors = require('cors');
 const mongoose = require('mongoose');
 
 //mongodb connection
-var uri = "mongodb://crimemap:VIETNAM26@ds211440.mlab.com:11440/delitos"
+var uri = "mongodb://crimemap:webdev8@ds211440.mlab.com:11440/delitos"
 mongoose.Promise = global.Promise;
 mongoose.connect(uri)
-//mongodb+srv://Crimemap:VIETNAM26@incidencia-delictiva-skgz6.mongodb.net/delitos
+//mongodb+srv://crimemap:webdev8@incidencia-delictiva-skgz6.mongodb.net/delitos
   .then(() => {
       console.log("Successfully connected to the database");    
   }).catch(err => {
