@@ -202,23 +202,28 @@ function addMapData() {
             //   * Yellow, 30px circles when point count is between 100 and 750
             //   * Pink, 40px circles when point count is greater than or equal to 750
             "circle-color": [
-                "step",
+                "interpolate",
+                ["linear"],
                 ["get", "point_count"],
-                "#51bbd6",
-                100,
-                "#f1f075",
-                750,
-                "#f28cb1"
+                2,"#e0ff7c",
+                10,"#ffeb5b",
+                50,"#ffa75b",
+                100,"#ff5b5b",
+                500,"#ff0000",
+                1000,"#b20000"
+
             ],
             "circle-radius": [
-                "step",
+                "interpolate",
+                ["linear"],
                 ["get", "point_count"],
-                20,
-                100,
-                30,
-                750,
-                40
-            ]
+                2, 15,
+                50, 25,
+                100, 30,
+                500, 35,
+                1000, 40
+            ],
+            'circle-opacity': 0.8,
         }
     });
     //cluster labels
