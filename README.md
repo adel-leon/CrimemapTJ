@@ -17,6 +17,7 @@ Tecnologías usadas:
 Instrucciones para acceder:
 ---------------------------
     Es necesario internet para la visualización del mapa y el acceso a la base de datos.
-    1.- Ejecutar un servidor de Node en la carpeta raíz del proyecto.
-    2.- Acceder a "localhost:3000" en el explorador.
-    2.1.- En caso de querer acceder a los datos que se solicitan al servidor, agregar "/API/crimes" al URL.
+    1.- Ejecutar "npm install" en la carpeta raíz del proyecto.
+    2.- Ejecutar un servidor de Node en la carpeta raíz del proyecto.
+    3.- Acceder a "localhost:3000" en el explorador.
+    3.1.- En caso de querer acceder a los datos que se solicitan al servidor, agregar "/API/crimes" al URL.
