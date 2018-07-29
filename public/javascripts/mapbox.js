@@ -85,10 +85,10 @@ function getCrimeData() {
         contentType: "application/json",
         type: "GET",
         success: function(response){
-            console.log("Success");
+           
         },
         error: function(error,status){
-            console.error(error);
+            
         }
     }).done(function (data) {
         crimeData = data[0];
